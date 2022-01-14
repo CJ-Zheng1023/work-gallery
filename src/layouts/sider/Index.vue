@@ -1,18 +1,26 @@
 <template>
-  <div class="sider">
+  <a-sider breakpoint="lg" collapsible v-model="collapsed" :trigger="null">
     <Logo />
     <Menu />
-  </div>
+  </a-sider>
 </template>
 
 <script>
 import Menu from './Menu'
 import Logo from './Logo.vue'
+import { Layout } from 'ant-design-vue'
+const { Sider: ASider } = Layout
 export default {
   name: 'Sider',
+  data() {
+    return {
+      collapsed: false
+    }
+  },
   components: {
     Menu,
-    Logo
+    Logo,
+    ASider
   }
 }
 </script>

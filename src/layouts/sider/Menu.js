@@ -20,10 +20,8 @@ export default {
           return (
             <Item key={route.path}>
               <router-link to={route.path}>
-                <span>
-                  <Icon type="appstore" />
-                  {route.name}
-                </span>
+                <Icon type="appstore" />
+                <span>{route.name}</span>
               </router-link>
             </Item>
           )
