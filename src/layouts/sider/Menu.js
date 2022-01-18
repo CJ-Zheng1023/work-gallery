@@ -3,6 +3,11 @@ import routes from '@/router/routes'
 const { SubMenu, Item } = Menu
 export default {
   name: 'Menu',
+  data() {
+    return {
+      path: this.$route.path
+    }
+  },
   methods: {
     generateMenus(routes) {
       return routes.map(route => {
@@ -31,7 +36,7 @@ export default {
   },
   render() {
     return (
-      <Menu theme="dark" mode="inline">
+      <Menu theme="dark" mode="inline" defaultSelectedKeys={[this.path]}>
         {this.generateMenus(routes)}
       </Menu>
     )
