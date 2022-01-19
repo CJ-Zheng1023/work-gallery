@@ -1,4 +1,4 @@
-import { Menu, Icon, Input } from 'ant-design-vue'
+import { Menu, Icon } from 'ant-design-vue'
 import routes from '@/router/routes'
 const { SubMenu, Item } = Menu
 export default {
@@ -35,10 +35,6 @@ export default {
     }
   },
   render() {
-    return (
-      <Menu theme="dark" mode="inline" defaultSelectedKeys={[this.path]}>
-        {this.generateMenus(routes)}
-      </Menu>
-    )
+    return <Menu {...{ props: { theme: 'dark', mode: 'inline', defaultSelectedKeys: [this.path] } }}>{this.generateMenus(routes)}</Menu>
   }
 }
