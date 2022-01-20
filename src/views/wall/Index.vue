@@ -1,12 +1,16 @@
 <template>
-  <div>
-    this is wall
+  <div style="height: 100%">
+    <Tile />
   </div>
 </template>
 
 <script>
+import Tile from '@/components/tile'
 export default {
-  name: 'Wall'
+  name: 'Wall',
+  components: {
+    Tile
+  }
 }
 </script>
 
