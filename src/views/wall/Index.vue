@@ -1,6 +1,10 @@
 <template>
   <div style="height: 100%">
-    <Tile />
+    <Tile>
+      <!-- <template #actions>
+        <div>213</div>
+      </template> -->
+    </Tile>
   </div>
 </template>
 
