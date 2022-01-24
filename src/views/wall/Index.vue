@@ -1,10 +1,6 @@
 <template>
   <div style="height: 100%">
-    <Tile>
-      <!-- <template #actions>
-        <div>213</div>
-      </template> -->
-    </Tile>
+    <Tile :dataSource="tiles" @change="onChange"></Tile>
   </div>
 </template>
 
@@ -14,6 +10,20 @@ export default {
   name: 'Wall',
   components: {
     Tile
+  },
+  data() {
+    return {
+      tiles: []
+    }
+  },
+  methods: {
+    onChange({ error, list }) {
+      if (error) {
+        this.$message.warn(error)
+        return
+      }
+      this.tiles = list
+    }
   }
 }
 </script>

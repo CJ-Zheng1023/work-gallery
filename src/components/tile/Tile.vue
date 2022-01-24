@@ -5,22 +5,22 @@
         <form class="tile__form">
           <div class="tile__form-item">
             <label class="tile__form-item-label">行</label>
-            <input type="number" class="tile__form-item-input" />
+            <input type="number" v-model="matrix.row" class="tile__form-item-input" />
           </div>
           <div class="tile__form-item">
             <label class="tile__form-item-label">列</label>
-            <input type="number" class="tile__form-item-input" />
+            <input type="number" v-model="matrix.column" class="tile__form-item-input" />
           </div>
         </form>
         <div class="tile__actions">
           <slot name="actions">
             <div class="tile__button-group">
-              <button class="tile__button">绘 制</button>
-              <button class="tile__button">合 并</button>
-              <button class="tile__button">添加行</button>
-              <button class="tile__button">删除行</button>
-              <button class="tile__button">添加列</button>
-              <button class="tile__button">删除列</button>
+              <button class="tile__button" @click="draw">绘 制</button>
+              <button class="tile__button" @click="merge">合 并</button>
+              <button class="tile__button" @click="addRow">添加行</button>
+              <button class="tile__button" @click="deleteRow">删除行</button>
+              <button class="tile__button" @click="addCol">添加列</button>
+              <button class="tile__button" @click="deleteCol">删除列</button>
             </div>
           </slot>
         </div>
@@ -32,12 +32,17 @@
       </div>
     </div>
     <div class="tile__content">
+      <div class="tile__content-inner">
+        <tile-item v-for="tile in sortedTiles" :key="tile.key" :left="tile.left" :top="tile.top" :height="tile.height" :width="tile.width">
+        </tile-item>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import sortBy from 'lodash/sortBy'
+import TileItem from './TileItem.vue'
 import { uuid, multiply } from './helpers'
 const defaultFieldNames = {
   rowSpan: 'rowSpan',
@@ -48,6 +53,9 @@ const defaultFieldNames = {
 }
 export default {
   name: 'Tile',
+  components: {
+    TileItem
+  },
   props: {
     dataSource: {
       default: () => [],
@@ -148,28 +156,32 @@ export default {
     }
   },
   methods: {
+    draw() {
+      const tiles = []
+      const { row, column } = this
+      for (let i = 0; i < row; i++) {
+        for (let j = 0; j < column; j++) {
+          tiles.push(this.createTile(i, j))
+        }
+      }
+      this.emitChange(null, tiles)
+    },
     /**
      * 创建块
      * @param {Number} x       行索引
      * @param {Number} y       列索引
-     * @param {Number} height  块高度
-     * @param {Number} width   块宽度
      * @param {Number} rowSpan 所占有的行
      * @param {Number} colSpan 所占有的列
      * @returns {Object}
      */
-    createTile(x, y, height, width, rowSpan = 1, colSpan = 1) {
+    createTile(x, y, rowSpan = 1, colSpan = 1) {
       return {
         key: uuid(),
         rowSpan,
         colSpan,
         active: false,
         rowIndex: x,
-        colIndex: y,
-        left: multiply(width, y),
-        top: multiply(height, x),
-        width: multiply(width, colSpan),
-        height: multiply(height, rowSpan)
+        colIndex: y
       }
     },
     /**
@@ -222,12 +234,9 @@ export default {
         this.emitChange('无法合并选中块')
         return
       }
-      const { tileHeight, tileWidth } = this
       const tile = this.createTile(
         minRow,
         minCol,
-        tileHeight,
-        tileWidth,
         maxRow - minRow,
         maxCol - minCol
       )
@@ -270,24 +279,24 @@ export default {
       if (this.isEmpty) {
         return
       }
-      this.matrix.row += 1
-      this.calculatePosition()
-      const { row, column, tileHeight, tileWidth } = this
+      const { row, column } = this
+      const tiles = [...this.tiles]
       for (let i = 0; i < column; i++) {
-        this.tiles.push(this.createTile(row - 1, i, tileHeight, tileWidth))
+        tiles.push(this.createTile(row, i))
       }
+      this.emitChange(null, tiles)
     },
     // 添加列
     addCol() {
       if (this.isEmpty) {
         return
       }
-      this.matrix.column += 1
-      this.calculatePosition()
-      const { row, column, tileHeight, tileWidth } = this
+      const { row, column } = this
+      const tiles = [...this.tiles]
       for (let i = 0; i < row; i++) {
-        this.tiles.push(this.createTile(i, column - 1, tileHeight, tileWidth))
+        tiles.push(this.createTile(i, column))
       }
+      this.emitChange(null, tiles)
     },
     // 删除行
     deleteRow() {
@@ -296,30 +305,26 @@ export default {
       if (rowIndex === 0) {
         return
       }
-      const { lastRowColSpan, lastRowRowSpan, notLastRowTiles } =
-        this.tiles.reduce(
-          (obj, tile) => {
-            if (tile.rowIndex === rowIndex) {
-              obj['lastRowColSpan'] += tile['colSpan']
-              obj['lastRowRowSpan'] = tile['rowSpan']
-            } else {
-              obj['notLastRowTiles'].push(tile)
-            }
-            return obj
-          },
-          {
-            lastRowColSpan: 0, // 最后一行占用的列数
-            lastRowRowSpan: 0, // 最后一行占用的行数
-            notLastRowTiles: [] // 不为最后一行的块
+      const { lastRowColSpan, notLastRowTiles } = this.tiles.reduce(
+        (obj, tile) => {
+          if (tile.rowIndex === rowIndex) {
+            obj['lastRowColSpan'] += tile['colSpan']
+            obj['lastRowRowSpan'] = tile['rowSpan']
+          } else {
+            obj['notLastRowTiles'].push(tile)
           }
-        )
+          return obj
+        },
+        {
+          lastRowColSpan: 0, // 最后一行占用的列数
+          notLastRowTiles: [] // 不为最后一行的块
+        }
+      )
       if (lastRowColSpan !== this.column) {
-        this.$message.warn('删除行未对齐')
+        this.emitChange('删除行未对齐')
         return
       }
-      this.tiles = notLastRowTiles
-      this.matrix.row += -lastRowRowSpan
-      this.calculatePosition()
+      this.emitChange(null, notLastRowTiles)
     },
     // 删除列
     deleteCol() {
@@ -328,30 +333,26 @@ export default {
       if (colIndex === 0) {
         return
       }
-      const { lastColRowSpan, lastColColSpan, notLastColTiles } =
-        this.tiles.reduce(
-          (obj, tile) => {
-            if (tile.colIndex === colIndex) {
-              obj['lastColRowSpan'] += tile['rowSpan']
-              obj['lastColColSpan'] = tile['colSpan']
-            } else {
-              obj['notLastColTiles'].push(tile)
-            }
-            return obj
-          },
-          {
-            lastColRowSpan: 0, // 最后一列占用的行数
-            lastColColSpan: 0, // 最后一列占用的列数
-            notLastColTiles: [] // 不为最后一列的块
+      const { lastColRowSpan, notLastColTiles } = this.tiles.reduce(
+        (obj, tile) => {
+          if (tile.colIndex === colIndex) {
+            obj['lastColRowSpan'] += tile['rowSpan']
+            obj['lastColColSpan'] = tile['colSpan']
+          } else {
+            obj['notLastColTiles'].push(tile)
           }
-        )
+          return obj
+        },
+        {
+          lastColRowSpan: 0, // 最后一列占用的行数
+          notLastColTiles: [] // 不为最后一列的块
+        }
+      )
       if (lastColRowSpan !== this.row) {
-        this.$message.warn('删除列未对齐')
+        this.emitChange('删除列未对齐')
         return
       }
-      this.tiles = notLastColTiles
-      this.matrix.column += -lastColColSpan
-      this.calculatePosition()
+      this.emitChange(null, notLastColTiles)
     }
   }
 }
@@ -388,6 +389,7 @@ export default {
     border-radius: 4px;
     .tile__content-inner {
       position: relative;
+      height: 100%;
     }
   }
   .tile__form {
