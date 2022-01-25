@@ -1,5 +1,7 @@
 <template>
-  <div :style="style" class="tile-item">tile-item</div>
+  <div :style="style" :class="['tile-item', { 'tile-item--active': active }]">
+    <slot></slot>
+  </div>
 </template>
 
 <script>
@@ -21,6 +23,10 @@ export default {
     height: {
       type: Number,
       required: true
+    },
+    active: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -43,6 +49,23 @@ export default {
 
 <style lang="less" scoped>
 .tile-item {
+  user-select: none;
+  z-index: 1;
+  cursor: pointer;
+  box-sizing: border-box;
   position: absolute;
+  background-color: rgb(94, 94, 94);
+  border: 1px solid rgb(136, 136, 136);
+  box-shadow: 0 0 5px #444 inset;
+  color: #9bca63;
+  &:hover {
+    box-shadow: 0 0 10px #000;
+    z-index: 2;
+    border: 1px solid #aaa;
+  }
+  &.tile-item--active {
+    box-shadow: 0 0 5px #000 inset;
+    background-color: #555;
+  }
 }
 </style>

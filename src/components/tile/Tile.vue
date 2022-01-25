@@ -33,7 +33,10 @@
     </div>
     <div class="tile__content">
       <div class="tile__content-inner">
-        <tile-item v-for="tile in sortedTiles" :key="tile.key" :left="tile.left" :top="tile.top" :height="tile.height" :width="tile.width">
+        <tile-item v-for="(tile, index) in sortedTiles" :active="tile.active" :key="tile.key" :left="tile.left" :top="tile.top" :height="tile.height" :width="tile.width">
+          <div class="tile-item__content" @click="clickItem($event, tile, index)">
+            <slot name="customRender" :tile="tile" :index="index"></slot>
+          </div>
         </tile-item>
       </div>
     </div>
@@ -156,6 +159,24 @@ export default {
     }
   },
   methods: {
+    clickItem(e, tile, index) {
+      if (tile.active) {
+        // 已经点击的状态
+        tile.active = false
+      } else {
+        // 未点击的状态
+        if (!e.ctrlKey) {
+          // 未按住ctrl键时重置其余块为未点击状态
+          this.tiles.forEach(item => {
+            if (item.key !== tile.key) {
+              item.active = false
+            }
+          })
+        }
+        tile.active = true
+      }
+      this.$emit('clickItem', { item: tile, index })
+    },
     draw() {
       const tiles = []
       const { row, column } = this
@@ -243,6 +264,10 @@ export default {
       this.emitChange(null, notActives.concat(tile))
     },
     emitChange(errorMessage, tiles) {
+      if (errorMessage) {
+        this.$emit('change', { error: errorMessage })
+        return
+      }
       const { dataKey, computedFieldNames } = this
       const { rowIndex, colIndex, rowSpan, colSpan, active } =
         computedFieldNames
@@ -258,7 +283,7 @@ export default {
           }),
         []
       )
-      this.$emit('change', { error: errorMessage, list })
+      this.$emit('change', { list })
     },
     /**
      * 计算块大小、位置
@@ -390,6 +415,11 @@ export default {
     .tile__content-inner {
       position: relative;
       height: 100%;
+      .tile-item__content {
+        height: 100%;
+        width: 100%;
+        padding: 6px 8px;
+      }
     }
   }
   .tile__form {
