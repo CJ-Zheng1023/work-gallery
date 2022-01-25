@@ -160,13 +160,13 @@ export default {
   },
   methods: {
     clickItem(e, tile, index) {
+      // 已经点击的状态
       if (tile.active) {
-        // 已经点击的状态
         tile.active = false
-      } else {
         // 未点击的状态
+      } else {
+        // 未按住ctrl键时重置其余块为未点击状态
         if (!e.ctrlKey) {
-          // 未按住ctrl键时重置其余块为未点击状态
           this.tiles.forEach(item => {
             if (item.key !== tile.key) {
               item.active = false
