@@ -7,18 +7,29 @@
       <template #extra>
         <a-button @click="save">提交</a-button>
       </template>
+      <!-- <template #actions="{ on: { draw, merge, addRow, deleteRow, addCol, deleteCol } }">
+        <a-space>
+          <a-button @click="draw">绘 制</a-button>
+          <a-button @click="merge">合 并</a-button>
+          <a-button @click="addRow">添加行</a-button>
+          <a-button @click="deleteRow">删除行</a-button>
+          <a-button @click="addCol">添加列</a-button>
+          <a-button @click="deleteCol">删除列</a-button>
+        </a-space>
+      </template> -->
     </Tile>
   </div>
 </template>
 
 <script>
 import Tile from '@/components/tile'
-import { message, Button as AButton } from 'ant-design-vue'
+import { message, Button as AButton, Space as ASpace } from 'ant-design-vue'
 export default {
   name: 'Wall',
   components: {
     Tile,
-    AButton
+    AButton,
+    ASpace
   },
   data() {
     return {

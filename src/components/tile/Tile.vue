@@ -13,7 +13,7 @@
           </div>
         </form>
         <div class="tile__actions">
-          <slot name="actions">
+          <slot name="actions" :on="{ draw, merge, addRow, deleteRow, addCol, deleteCol }">
             <div class="tile__button-group">
               <button class="tile__button" @click="draw">绘 制</button>
               <button class="tile__button" @click="merge">合 并</button>
