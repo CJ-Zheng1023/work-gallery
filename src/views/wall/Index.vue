@@ -37,6 +37,7 @@ export default {
     }
   },
   mounted() {
+    message.info('按住ctrl键可以执行多选操作')
     this.tiles = JSON.parse(
       `[{"key":"bf0ab90e-d9dd-449c-a74f-0d5620c158e2","rowSpan":1,"colSpan":1,"rowIndex":0,"colIndex":0},{"key":"ce71293c-1f7e-474b-828c-365c83080da4","rowSpan":1,"colSpan":1,"rowIndex":2,"colIndex":0},{"key":"df209285-1ba8-441b-a4d2-986b64da5443","rowSpan":1,"colSpan":1,"rowIndex":2,"colIndex":1},{"key":"33df2a78-d052-424a-910d-d8c83ad0d69f","rowSpan":1,"colSpan":2,"rowIndex":1,"colIndex":0},{"key":"4d5a3414-3749-48b3-a7b7-6629121da536","rowSpan":1,"colSpan":2,"rowIndex":0,"colIndex":1},{"key":"ba14d0e1-f1d5-45ff-81a6-d58fa238a7f4","rowSpan":2,"colSpan":1,"rowIndex":1,"colIndex":2}]`
     )
