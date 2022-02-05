@@ -1,10 +1,12 @@
 <template>
-  <router-view />
+  <div class="container">
+    this is mark
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'Viewer'
+  name: 'Mark'
 }
 </script>
 

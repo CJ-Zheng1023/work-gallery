@@ -1,6 +1,6 @@
 <template>
   <a-content style="margin: 24px 16px;backgroundColor: #fff;boxShadow: rgb(199 204 209) 0px 2px 8px">
-    <div style="height: 100%;padding: 24px;overflow-y: auto;">
+    <div style="height: 100%;">
       <router-view />
     </div>
   </a-content>

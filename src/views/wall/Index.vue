@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100%">
+  <div class="container">
     <Tile :dataSource="tiles" @change="onChange" @clickItem="onClickItem">
       <template #customRender="{ index }">
         <div style="display: flex;justify-content: center;align-items: center;height: 100%;">{{ index + 1 }}</div>
