@@ -13,6 +13,7 @@ import HighlightPanel from './HighlightPanel.vue'
 import HighlightBar from './HighlightBar.vue'
 import { highlight, highdense } from 'html-replacer'
 import { debounce } from 'lodash'
+import { message } from 'ant-design-vue'
 export default {
   name: 'Highlight',
   components: {
@@ -65,6 +66,7 @@ export default {
     }
   },
   mounted() {
+    message.info('请使用ctrl + f 组合快捷键呼出关键词搜索面板')
     window.addEventListener('keydown', this.showKeywordsPanel)
     this.debouncedGetHighdense = debounce(this.getHighdense, 1000)
     window.addEventListener('resize', this.debouncedGetHighdense)
