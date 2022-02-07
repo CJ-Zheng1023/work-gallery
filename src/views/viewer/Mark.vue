@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="scroll" ref="scroll" @mouseup="handleMark">
+    <div class="scroll" ref="scroll" @mousedown="handleMousedown" @mouseup="handleMark">
       <div v-html="html"></div>
     </div>
     <div class="mark-box">
@@ -11,7 +11,7 @@
             <div :class="['mark-item', { 'active': mark.active }]" v-for="(mark, index) in marks" :key="mark.id" @click="clickMark(mark)">
               <div class="actions">
                 <a-icon type="edit" @click="clickEditIcon(mark, index)" />
-                <a-icon type="delete" style="margin-left: 8px" @click="clickDeleteIcon(mark.id)" />
+                <a-icon type="delete" style="margin-left: 8px" @click="clickDeleteIcon(mark.id, mark.active)" />
               </div>
               <div class="icon">
                 <a-icon type="snippets" />
@@ -67,7 +67,11 @@ export default {
     }
   },
   methods: {
-    handleMark() {
+    handleMousedown(e) {
+      this.x = e.x
+      this.y = e.y
+    },
+    handleMark(e) {
       if (!document.getSelection().toString()) {
         return
       }
@@ -76,9 +80,14 @@ export default {
         document.getSelection().getRangeAt(0)
       )
       mark(this.$refs.scroll, marker, {
-        click: id => {
-          const markObj = this.marks.find(item => item.id === id)
-          this.clickMark(markObj)
+        click: (id, e) => {
+          // 判断是否为点击操作，过滤滑动框选文本触发的点击事件
+          if (e.x === this.x && e.y === this.y) {
+            const markObj = this.marks.find(item => item.id === id)
+            if (markObj) {
+              this.clickMark(markObj)
+            }
+          }
         }
       })
       const markObj = {
@@ -103,12 +112,19 @@ export default {
         this.$refs.textarea[index].focus()
       })
     },
-    clickDeleteIcon(id) {
+    clickDeleteIcon(id, active) {
       Modal.confirm({
         title: '提示',
         content: '确定要删除该标注吗？',
         onOk: () => {
           this.marks = this.marks.filter(mark => mark.id !== id)
+          if (active) {
+            document
+              .querySelectorAll(`[data-mark-id~='${id}']`)
+              .forEach(dom => {
+                dom.style.backgroundColor = '#ff9'
+              })
+          }
           unmark(id)
         }
       })
