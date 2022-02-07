@@ -1,15 +1,50 @@
 <template>
-  <div class="container" ref="container" @mouseup="handleMark">
-    <div v-html="html"></div>
+  <div class="container">
+    <div class="scroll" ref="scroll" @mouseup="handleMark">
+      <div v-html="html"></div>
+    </div>
+    <div class="mark-box">
+      <div class="mark-box-header">我的标注</div>
+      <div class="mark-box-body">
+        <div class="marks">
+          <template v-if="marks.length">
+            <div :class="['mark-item', { 'active': mark.active }]" v-for="(mark, index) in marks" :key="mark.id" @click="clickMark(mark)">
+              <div class="actions">
+                <a-icon type="edit" @click="clickEditIcon(mark, index)" />
+                <a-icon type="delete" style="margin-left: 8px" @click="clickDeleteIcon(mark.id)" />
+              </div>
+              <div class="icon">
+                <a-icon type="snippets" />
+              </div>
+              <div class="content">
+                <div class="editor" v-show="mark.editing">
+                  <a-textarea ref="textarea" v-model="mark.text" auto-size placeholder="请输入标注内容" @blur="handleEdit(mark)" />
+                </div>
+                <div class="viewer" v-show="!mark.editing">{{ mark.text }}</div>
+              </div>
+            </div>
+          </template>
+          <template v-else>
+            <div style="text-align: center;margin-top: 16px;color: #999;">暂无标注内容</div>
+          </template>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import { Icon as AIcon, Input, Modal } from 'ant-design-vue'
 import { mark, createMarker, unmark } from 'html-replacer'
 export default {
   name: 'Mark',
+  components: {
+    AIcon,
+    ATextarea: Input.TextArea
+  },
   data() {
     return {
+      marks: [],
       html: `<p>Vue.js 是什么</p>
         <p>Vue (读音 /vjuː/，类似于 view) 是一套用于构建用户界面的渐进式框架。与其它大型框架不同的是，Vue 被设计为可以自底向上逐层应用。Vue 的核心库只关注视图层，不仅易于上手，还便于与第三方库或既有项目整合。另一方面，当与现代化的工具链以及各种支持类库结合使用时，Vue 也完全能够为复杂的单页应用提供驱动。</p>
         <p>如果你想在深入学习 Vue 之前对它有更多了解，我们制作了一个视频，带您了解其核心概念和一个示例工程。</p>
@@ -36,15 +71,163 @@ export default {
       if (!document.getSelection().toString()) {
         return
       }
-      const markers = createMarker(
-        this.$refs.container,
+      const marker = createMarker(
+        this.$refs.scroll,
         document.getSelection().getRangeAt(0)
       )
-      mark(this.$refs.container, markers)
+      mark(this.$refs.scroll, marker, {
+        click: id => {
+          const markObj = this.marks.find(item => item.id === id)
+          this.clickMark(markObj)
+        }
+      })
+      const markObj = {
+        id: marker.id,
+        text: '',
+        active: false,
+        editing: false
+      }
+      this.marks.push(markObj)
+      this.clickMark(markObj)
+      this.clickEditIcon(markObj, this.marks.length - 1)
+    },
+    handleEdit(mark) {
+      if (!mark.text) {
+        mark.text = '暂无'
+      }
+      mark.editing = false
+    },
+    clickEditIcon(mark, index) {
+      mark.editing = true
+      this.$nextTick(() => {
+        this.$refs.textarea[index].focus()
+      })
+    },
+    clickDeleteIcon(id) {
+      Modal.confirm({
+        title: '提示',
+        content: '确定要删除该标注吗？',
+        onOk: () => {
+          this.marks = this.marks.filter(mark => mark.id !== id)
+          unmark(id)
+        }
+      })
+    },
+    clickMark(mark) {
+      this.marks.forEach(item => {
+        document
+          .querySelectorAll(`[data-mark-id~='${item.id}']`)
+          .forEach(dom => {
+            dom.style.backgroundColor = '#ff9'
+          })
+        item.active = false
+      })
+      mark.active = true
+      document.querySelectorAll(`[data-mark-id~='${mark.id}']`).forEach(dom => {
+        dom.style.backgroundColor = '#a2f19d'
+      })
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
+.container {
+  position: relative;
+  margin-right: 300px;
+  overflow-y: hidden;
+  padding: 0;
+}
+.scroll {
+  height: 100%;
+  overflow-y: auto;
+  padding: 24px;
+}
+.mark-box {
+  position: fixed;
+  right: 16px;
+  top: 88px;
+  bottom: 93px;
+  width: 280px;
+  background-color: #fff;
+  box-shadow: rgb(199 204 209) 0px 2px 8px;
+  display: flex;
+  flex-flow: column;
+  .mark-box-header {
+    padding: 24px 16px 16px 16px;
+    border-bottom: 1px solid #d7d6d6;
+    color: #888;
+    font-weight: 600;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .mark-box-body {
+    flex-grow: 1;
+    overflow-y: auto;
+    .marks {
+      padding: 20px 16px;
+      .mark-item {
+        & + .mark-item {
+          margin-top: 16px;
+        }
+        &:hover {
+          border-color: #cccaca;
+        }
+        &.active {
+          border-color: #7c45f3;
+          background-color: #eeeaf7;
+        }
+        border-bottom: 1px solid #d7d6d6;
+        border-left: 1px solid transparent;
+        border-top: 1px solid transparent;
+        border-right: 1px solid transparent;
+        border-radius: 4px;
+        position: relative;
+        padding: 20px 30px;
+        cursor: pointer;
+        .actions {
+          position: absolute;
+          top: 2px;
+          right: 8px;
+          font-size: 12px;
+          .anticon {
+            cursor: pointer;
+          }
+        }
+        .icon {
+          position: absolute;
+          top: 20px;
+          left: 10px;
+          font-size: 16px;
+          color: #7c45f3;
+        }
+        .content {
+          .viewer {
+            color: #777;
+            font-size: 14px;
+            word-wrap: break-word;
+            word-break: break-all;
+          }
+        }
+        .editor {
+          .ant-input {
+            background-color: #eeeaf7;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            resize: none;
+            border-radius: 0;
+            &:focus {
+              box-shadow: none;
+            }
+            &:hover,
+            &:focus {
+              border-bottom-color: #bea5f5;
+            }
+          }
+        }
+      }
+    }
+  }
+}
 </style>

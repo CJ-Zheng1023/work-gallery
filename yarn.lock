@@ -4246,10 +4246,10 @@ html-minifier@^3.2.3:
     relateurl "0.2.x"
     uglify-js "3.4.x"
 
-html-replacer@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/html-replacer/-/html-replacer-0.1.2.tgz#6018b736489966ce08903a39f0b377da0b9f8aa6"
-  integrity sha512-ypaHXd0oSq51PQsRbavH8BC4LlIMCHh8k7qPPEzHnHOA1XPMwickn/0+wK4xh/qPjWiWBCO2sICVOy2x+o8PYg==
+html-replacer@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/html-replacer/-/html-replacer-0.1.4.tgz#032e0fcf421442bee039c5cf9f7d32f7dffbf01c"
+  integrity sha512-r9/lFfIxZ/nvkLt+z95DllP0iU+7rZB3D+HudXjIVI6ML0AeMVJ7vHIKJyVw0LHmCCL6fsdfj0Z3ZEo+XXfmFQ==
   dependencies:
     "@babel/runtime" "^7.16.7"
 
