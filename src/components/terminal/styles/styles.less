@@ -1,0 +1,245 @@
+.ns-clearfix {
+  &::after {
+    clear: both;
+    content: '';
+    display: block;
+  }
+}
+.ns-status {
+  font-size: 17px;
+  float: left;
+  & + .ns-status {
+    margin-left: 20px;
+  }
+}
+@headerHeight: 50px;
+@blinkTime: 1s;
+.ns-terminal {
+  width: 100%;
+  height: 100%;
+  outline: none;
+  &.ns-terminal--dark {
+    .ns-terminal__header {
+      background-color: #171e22;
+      .ns-terminal__status {
+        .ns-status__label {
+          color: #7ea6b7;
+        }
+        .ns-status__value {
+          color: #c2dae5;
+        }
+      }
+    }
+    .ns-terminal__body {
+      .ns-terminal__cover {
+        background-color: rgba(0, 0, 0, 0.4);
+      }
+      .ns-terminal__main {
+        background-color: #263238;
+      }
+    }
+    .ns-terminal__row {
+      color: #bfd5dc;
+      ::selection {
+        background-color: #fff;
+      }
+      &.ns-terminal__row--command {
+        color: #fff;
+      }
+    }
+    .ns-terminal__input {
+      .ns-terminal__text {
+        &.ns-terminal__text--blink {
+          animation: text-blink--dark @blinkTime infinite;
+        }
+        &.ns-terminal__text--blur {
+          outline-color: #fff;
+        }
+      }
+      .ns-terminal__cursor {
+        &.ns-terminal__cursor--blink {
+          background-color: #fff;
+        }
+        &.ns-terminal__cursor--blur {
+          border: 1px solid #fff;
+        }
+      }
+    }
+  }
+  &.ns-terminal--light {
+    .ns-terminal__header {
+      background-color: #f2f2f2;
+      border-bottom: 1px solid #dbdbdb;
+      .ns-terminal__status {
+        .ns-status__label {
+          color: #273c57;
+        }
+        .ns-status__value {
+          color: #0404c8;
+        }
+      }
+    }
+    .ns-terminal__body {
+      .ns-terminal__cover {
+        background-color: rgba(255, 255, 255, 0.8);
+      }
+      .ns-terminal__main {
+        background-color: #fff;
+      }
+    }
+    .ns-terminal__row {
+      color: #030303;
+      ::selection {
+        background-color: rgb(155, 138, 138);
+      }
+      &.ns-terminal__row--command {
+        color: #1008a9;
+      }
+    }
+    .ns-terminal__input {
+      .ns-terminal__text {
+        &.ns-terminal__text--blink {
+          animation: text-blink--light @blinkTime infinite;
+        }
+        &.ns-terminal__text--blur {
+          outline-color: #1008a9;
+        }
+      }
+      .ns-terminal__cursor {
+        &.ns-terminal__cursor--blink {
+          background-color: #1008a9;
+        }
+        &.ns-terminal__cursor--blur {
+          border: 1px solid #1008a9;
+        }
+      }
+    }
+  }
+  .ns-terminal__header {
+    height: @headerHeight;
+    .ns-terminal__status {
+      line-height: @headerHeight;
+      padding-left: 20px;
+      float: left;
+    }
+  }
+  .ns-terminal__body {
+    // height: 100%;
+    position: relative;
+    height: calc(100% - @headerHeight);
+    width: 100%;
+    .ns-terminal__cover {
+      position: absolute;
+      z-index: 2;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      cursor: not-allowed;
+    }
+    .ns-terminal__main {
+      height: 100%;
+      padding: 15px 120px 15px 20px;
+      overflow-y: auto;
+      z-index: 1;
+      box-sizing: border-box;
+    }
+  }
+  @rowHeight: 17px;
+  .ns-terminal__row {
+    font-family: 'Roboto', '-apple-system', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 17px;
+    line-height: @rowHeight;
+    min-height: @rowHeight;
+    text-align: left;
+    position: relative;
+    word-wrap: break-word;
+    word-break: break-all;
+    margin-bottom: 5px;
+    .ns-terminal__line {
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-start;
+      .ns-terminal__prompt {
+        margin-right: 10px;
+        font-weight: 500;
+      }
+      .ns-terminal__content {
+        flex: 1;
+        word-wrap: break-word;
+        word-break: break-all;
+      }
+    }
+    .ns-terminal__cmd {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 10px;
+      input,
+      textarea {
+        padding: 0;
+        margin: 0;
+        border: none;
+        outline: none;
+        width: 100%;
+        background-color: transparent;
+        opacity: 0;
+      }
+    }
+  }
+  .ns-terminal__input {
+    position: relative;
+    cursor: text;
+    @textWidth: 9px;
+    .ns-terminal__text {
+      display: inline-block;
+      vertical-align: top;
+      height: @rowHeight;
+      text-align: center;
+      &.ns-terminal__text--blur {
+        outline-offset: -1px;
+        outline-width: 1px;
+        outline-style: solid;
+      }
+      // &.ns-terminal__text--empty {
+      //   // width: @textWidth;
+      // }
+    }
+    .ns-terminal__cursor {
+      vertical-align: top;
+      display: inline-block;
+      width: @textWidth;
+      height: @rowHeight;
+      &.ns-terminal__cursor--blink {
+        animation: cursor-blink @blinkTime infinite;
+      }
+    }
+  }
+}
+@keyframes cursor-blink {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes text-blink--dark {
+  0%,
+  100% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: #fff;
+  }
+}
+@keyframes text-blink--light {
+  0%,
+  100% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: #1008a9;
+  }
+}

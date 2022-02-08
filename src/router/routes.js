@@ -22,5 +22,10 @@ export default [
     path: '/wall',
     name: 'Wall',
     component: () => import('@/views/wall/Index.vue')
+  },
+  {
+    path: '/cmd',
+    name: 'Cmd',
+    component: () => import('@/views/cmd/Index.vue')
   }
 ]

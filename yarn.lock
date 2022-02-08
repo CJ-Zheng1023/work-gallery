@@ -950,6 +950,11 @@
     "@babel/helper-validator-identifier" "^7.16.7"
     to-fast-properties "^2.0.0"
 
+"@cj_zheng1023/vue2-contextmenu@^0.3.0":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@cj_zheng1023/vue2-contextmenu/-/vue2-contextmenu-0.3.1.tgz#0422797665d1beb2923b331fdfb7a9cc028b2f03"
+  integrity sha512-R5t8dH4VCFwco7Nsevc2tZtdAJZP7tO40EWjrvNxeN6hrRqI7LOv31a9d0x/4ood1uJ2PxAOj5TcmsapQ6oZ4w==
+
 "@hapi/address@2.x.x":
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/@hapi/address/-/address-2.1.4.tgz#5d67ed43f3fd41a69d4b9ff7b56e7c0d1d0a81e5"
@@ -3832,6 +3837,11 @@ flush-write-stream@^1.0.0:
   dependencies:
     inherits "^2.0.3"
     readable-stream "^2.3.6"
+
+focus-options-polyfill@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/focus-options-polyfill/-/focus-options-polyfill-1.6.0.tgz#12ef3081dae9801d32dfcffd7b69259ca8f57198"
+  integrity sha512-uyrAmLZrPnUItQY5wTdg31TO9GGZRGsh/jmohUg9oLmLi/sw5y7LlTV/mwyd6rvbxIOGwmRiv6LcTS8w7Bk9NQ==
 
 follow-redirects@^1.0.0:
   version "1.14.7"
