@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { Icon as AIcon, Input, Modal } from 'ant-design-vue'
+import { Icon as AIcon, Input, Modal, message } from 'ant-design-vue'
 import { mark, createMarker, unmark } from 'html-replacer'
 export default {
   name: 'Mark',
@@ -65,6 +65,9 @@ export default {
         <p>Vue 组件提供了纯自定义元素所不具备的一些重要功能，最突出的是跨组件数据流、自定义事件通信以及构建工具集成。</p>
         <p>虽然 Vue 内部没有使用自定义元素，不过在应用使用自定义元素、或以自定义元素形式发布时，依然有很好的互操作性。Vue CLI 也支持将 Vue 组件构建成为原生的自定义元素。</p>`
     }
+  },
+  mounted() {
+    message.info('通过鼠标滑动选中文本进行标注')
   },
   methods: {
     handleMousedown(e) {
