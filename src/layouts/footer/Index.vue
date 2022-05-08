@@ -1,6 +1,8 @@
 <template>
   <a-footer>
-    <div class="footer">&copy;AfterWin</div>
+    <div class="footer">
+      <a href="https://github.com/CJ-Zheng1023/work-gallery" target="_blank">&copy;CJ-Zheng</a>
+    </div>
   </a-footer>
 </template>
 
