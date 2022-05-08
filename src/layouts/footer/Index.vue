@@ -1,7 +1,7 @@
 <template>
   <a-footer>
     <div class="footer">
-      <a href="https://github.com/CJ-Zheng1023/work-gallery" target="_blank">&copy;CJ-Zheng</a>
+      <a href="https://cj-zheng1023.github.io/" target="_blank">&copy;个人简历</a>
     </div>
   </a-footer>
 </template>
